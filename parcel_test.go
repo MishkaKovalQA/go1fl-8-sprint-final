@@ -58,11 +58,10 @@ func TestAddGetDelete(t *testing.T) {
 	// проверьте, что значения всех полей в полученном объекте совпадают со значениями полей в переменной parcel
 	storedParcel, err := store.Get(id)
 	require.NoError(t, err)
-	assert.Equal(t, id, storedParcel.Number)
-	assert.Equal(t, parcel.Client, storedParcel.Client)
-	assert.Equal(t, parcel.Status, storedParcel.Status)
-	assert.Equal(t, parcel.Address, storedParcel.Address)
-	assert.Equal(t, parcel.CreatedAt, storedParcel.CreatedAt)
+
+	expectedParcel := parcel
+	expectedParcel.Number = id
+	assert.Equal(t, expectedParcel, storedParcel)
 
 	// delete
 	// удалите добавленную посылку, убедитесь в отсутствии ошибки
@@ -94,7 +93,11 @@ func TestSetAddress(t *testing.T) {
 	// получите добавленную посылку и убедитесь, что адрес обновился
 	storedParcel, err := store.Get(id)
 	require.NoError(t, err)
-	assert.Equal(t, newAddress, storedParcel.Address)
+
+	expectedParcel := parcel
+	expectedParcel.Number = id
+	expectedParcel.Address = newAddress
+	assert.Equal(t, expectedParcel, storedParcel)
 }
 
 // TestSetStatus проверяет обновление статуса
@@ -118,7 +121,11 @@ func TestSetStatus(t *testing.T) {
 	// получите добавленную посылку и убедитесь, что статус обновился
 	storedParcel, err := store.Get(id)
 	require.NoError(t, err)
-	assert.Equal(t, newStatus, storedParcel.Status)
+
+	expectedParcel := parcel
+	expectedParcel.Number = id
+	expectedParcel.Status = newStatus
+	assert.Equal(t, expectedParcel, storedParcel)
 }
 
 // TestGetByClient проверяет получение посылок по идентификатору клиента
@@ -165,9 +172,6 @@ func TestGetByClient(t *testing.T) {
 		// убедитесь, что значения полей полученных посылок заполнены верно
 		expectedParcel, ok := parcelMap[parcel.Number]
 		require.True(t, ok)
-		assert.Equal(t, expectedParcel.Client, parcel.Client)
-		assert.Equal(t, expectedParcel.Status, parcel.Status)
-		assert.Equal(t, expectedParcel.Address, parcel.Address)
-		assert.Equal(t, expectedParcel.CreatedAt, parcel.CreatedAt)
+		assert.Equal(t, expectedParcel, parcel)
 	}
 }
